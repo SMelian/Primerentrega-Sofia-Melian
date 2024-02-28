@@ -1,55 +1,25 @@
 const express = require("express");
-const ProductManager = require("../ProductManager");
+const ProductManager = require("./ProductManager");
+const CarritoManager = require("./CarritoManager");
 
-const PORT = 3000;
+const PORT = 8080;
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 
-const product.Router=require("./routes/products.router")
-
-const pm = new ProductManager("./productos.json"); 
+const productRouter = require("./routes/products.router");
+const carritoRouter = require("./routes/carrito.router");
+const pm = new ProductManager("./productos.json");
+const cm = new CarritoManager("./carrito.json");
 
 app.get('/', (req, res) => {
   res.send('<h1 style="color:green;"> Bienvenido a mi intento :)</h1> <h2> 1. En el buscador escribi /Products para ver el listado de todos los productos o <br> 2. Products/id para ver un productos en especifico</h2>')
-})
-
-app.get('/Products', async (req, res) => {
-  try {
-    let productos = await pm.getProducts();
-    let limit = req.query.limit;
-    if (limit && limit > 0) {
-      productos = productos.slice(0, limit);
-    }
-    res.json(productos);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
 });
 
-
-// app.get('/Products/:id', async (req, res) => {
-//   try {
-//     let productos = await pm.getProductById();
-//     res.json(producto);
-//   } catch (error) {
-//     res.status(500).json({ error: "Ese ID no existe" });
-//   }
-// });
-
-app.get('/Products/:id', async (req, res) => {
-  try {
-    const productId = req.params.id;
-    const product = await pm.getProductById(productId);
-    if (!product) {
-      return res.status(404).json({ error: "Product not found" });
-    }
-    res.json(product);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-})
+app.use('/products', productRouter);
+//app.use('/api//products', productRouter);
+app.use('/carrito', carritoRouter); 
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

@@ -61,7 +61,7 @@ class ProductManager {
 //   }
 getProductById(id) {
     try {
-      let productos = fs.readFileSync(this.filePath, 'utf-8');
+      let productos = fs.readFileSync(this.Path, 'utf-8');
       productos = JSON.parse(productos);
       const productoId = productos.find(u => u.id === id);
       if (!productoId) {
