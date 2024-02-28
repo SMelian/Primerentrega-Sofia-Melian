@@ -3,6 +3,12 @@ const ProductManager = require("../ProductManager");
 
 const PORT = 3000;
 const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+
+const product.Router=require("./routes/products.router")
+
 const pm = new ProductManager("./productos.json"); 
 
 app.get('/', (req, res) => {
