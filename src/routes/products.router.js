@@ -1,5 +1,9 @@
 const { Router } = require("express");
+const ProductManager = require("../ProductManager"); //me faltaba esto la entrega anterior
+
 const router = Router();
+
+const pm = new ProductManager("./productos.json"); // instancia
 
 router.get('/Products', async (req, res) => {
     try {
