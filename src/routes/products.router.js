@@ -3,20 +3,36 @@ const ProductManager = require("../ProductManager"); //me faltaba esto la entreg
 
 const router = Router();
 
-const pm = new ProductManager("./productos.json"); // instancia
+const pm = new ProductManager(); // instancia - "./productos.json"
+
+// router.get('/Products', async (req, res) => {
+//     try {
+//       let productos = await pm.getProducts();
+//       let limit = req.query.limit;
+//       if (limit && limit > 0) {
+//         productos = productos.slice(0, limit);
+//       }
+      
+//       //res.json(productos);
+//       res.render('index', { pageTitle: 'Lista de Productos', productos }); //render para que muestre productos como listado
+
+//     } catch (error) {
+//       res.status(500).json({ error: "Internal Server Error" });
+//     }
+//   });
 
 router.get('/Products', async (req, res) => {
-    try {
+  try {
       let productos = await pm.getProducts();
       let limit = req.query.limit;
       if (limit && limit > 0) {
-        productos = productos.slice(0, limit);
+          productos = productos.slice(0, limit);
       }
-      res.json(productos);
-    } catch (error) {
+      res.render('index', { pageTitle: 'Lista de Productos', productos }); // Render the 'index' view with the list of products
+  } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
-    }
-  });
+  }
+});
 
 router.get('/Products/:id', async (req, res) => {
     try {
@@ -38,7 +54,8 @@ router.get('/Products/:id', async (req, res) => {
             return res.status(400).json({ error: "All fields are required" });
         }
         const newProduct = await pm.addProduct(title, description, code, price, status, stock, category, thumbnails);
-        res.status(201).json(newProduct);
+        //res.status(201).json(newProduct);
+        req.io.emit("NewProduct",newProduct)
     } catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
     }
