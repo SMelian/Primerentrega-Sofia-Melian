@@ -61,14 +61,16 @@ class ProductManager {
 //   }
 getProductById(id) {
     try {
-      let productos = fs.readFileSync(this.Path, 'utf-8');
+      let productos = fs.readFileSync(this.path, 'utf-8');
       productos = JSON.parse(productos);
-      const productoId = productos.find(u => u.id === id);
-      if (!productoId) {
+      console.log("all products:",productos);
+      const product = productos.find(product => product.id === id);
+      console.log("Product found:", product); // Log the product found
+      if (!product) {
         console.log(`No existen productos con el id ${id}, prueba otro`);
         return null;
       }
-      return productoId;
+      return product;
     } catch (error) {
       console.error('Error occurred while reading or parsing products data:', error);
       return null;

@@ -21,7 +21,7 @@ const pm = new ProductManager(); // instancia - "./productos.json"
 //     }
 //   });
 
-router.get('/Products', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
       let productos = await pm.getProducts();
       let limit = req.query.limit;
@@ -36,12 +36,14 @@ router.get('/Products', async (req, res) => {
 
 router.get('/Products/:id', async (req, res) => {
     try {
-      const productId = req.params.id;
+      const productId = parseInt(req.params.id);
       const product = await pm.getProductById(productId);
+      
       if (!product) {
         return res.status(404).json({ error: "Product not found" });
       }
-      res.json(product);
+      res.render('product', { pageTitle: 'Producto elegido', product }); // Render the 'index' view with the list of products
+     
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
     }
@@ -61,7 +63,7 @@ router.get('/Products/:id', async (req, res) => {
     }
 });
 
-router.put('/:id', async (req, res) => {
+ router.put('/:id', async (req, res) => {
     try {
         const productId = req.params.id;
         const updatedFields = req.body;
