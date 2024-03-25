@@ -42,5 +42,29 @@ const serverHttp = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+// Initialize Socket.io server
 const io = new Server(serverHttp);
+
+let mensajes = []
+let usuario = []
+// Handle WebSocket connections
+io.on("connection", socket => {
+  console.log(`A user connected ${socket.id}`);
+  // You can add your WebSocket logic here
+  socket.on("presentation", nombre=>{
+    usuario.push({id: socket.id,nombre})
+    socket.emit("historial",mensajes)
+    console.log(nombre)
+    socket.broadcast.emit("nuevoUsuario", nombre)
+  
+
+  })
+
+  socket.on("mensaje",(nombre,mensaje)=>{
+     mensajes.push({nombre,mensaje})
+     io.emit("nuevoMensaje",nombre,mensaje)
+
+  })
+
+})
 

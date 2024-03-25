@@ -1,11 +1,13 @@
 {
   "name": "primerentrega-sofia-melian",
   "version": "1.0.0",
+  "type": "commonjs",
   "description": "",
   "main": "ProductManager.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon ./src/app.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +15,7 @@
     "express": "^4.19.1",
     "express-handlebars": "^7.1.2",
     "handlebars": "^4.7.8",
+    "mongoose": "^8.2.3",
     "socket.io": "^4.7.5"
   }
 }
