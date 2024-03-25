@@ -63,6 +63,21 @@ router.get('/Products/:id', async (req, res) => {
     }
 });
 
+router.post('/api/productos', async (req, res) => {
+    try {
+        const { title, description, price, thumbnail, code, stock} = req.body;
+
+        // llama al método addProduct de tu ProductManager para agregar el producto
+        await pm.addProduct(title, description, price, thumbnail, code, stock);
+
+        res.status(201).json({ message: "Producto agregado correctamente" });
+    } catch (error) {
+        // Manejar errores
+        console.error('Error al agregar el producto:', error);
+        res.status(500).json({ error: "Error interno del servidor" });
+    }
+});
+
  router.put('/:id', async (req, res) => {
     try {
         const productId = req.params.id;

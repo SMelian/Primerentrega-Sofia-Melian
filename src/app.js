@@ -7,6 +7,9 @@ const path = require("path");
 
 const productRouter = require("./routes/products.router");
 const carritoRouter = require("./routes/carrito.router");
+const chatRouter = require("./routes/chat.router");
+const realTimeProducts = require("./routes/realTimeproduct.router");
+
 const pm = new ProductManager("./productos.json");
 const cm = new CarritoManager("./carrito.json");
 
@@ -34,10 +37,11 @@ app.use("/api/productos", (req, res, next) => {
   next();
 }, productRouter);
 
-app.use("/Products",productRouter)
-
+app.use("/Products",productRouter);
 app.use('/carrito', carritoRouter); 
-
+app.use('/chat', chatRouter); 
+app.use('/realTimeProducts', realTimeProducts);
+ 
 const serverHttp = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

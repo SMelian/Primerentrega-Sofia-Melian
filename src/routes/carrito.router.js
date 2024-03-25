@@ -5,25 +5,27 @@ const router = Router();
 const cm = new CarritoManager();
 
 router.get('/', (req, res) => {
-    const cart = cm.getCart();
-    res.json(cart);
+    const cart = cm.loadCartData();
+    res.render('carrito', { pageTitle: 'Carrito de Compras', cart });
 });
 router.get('/:cid', (req, res) => {
     const cartId = req.params.cid;
     res.json(productosDelCarrito);
 });
 
-router.post('/:cid/product/:pid', (req, res) => {
+router.post('/api/cart/add/:productId', (req, res) => {
+    const productId = req.params.productId;
+
     try {
-        const cartId = req.params.cid;
-        const productId = req.params.cid;
-
-        // esto deberia agregar el producto al carrito (creo)
-        cm.addProductToCart(cartId, productId);
-
-        res.status(201).json({ message: "Product added to cart" });
+        // Agregar el producto al carrito utilizando tu CarritoManager
+        cm.addToCart(productId);
+        
+        // Respuesta exitosa
+        res.sendStatus(200);
     } catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
+        // Manejar errores
+        console.error('Error al agregar el producto al carrito:', error);
+        res.status(500).json({ error: "Error interno del servidor" });
     }
 });
 

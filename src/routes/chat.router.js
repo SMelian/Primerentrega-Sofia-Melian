@@ -1,15 +1,10 @@
 const { Router } = require("express");
 
-const router = Route
+const router = Router();
 
 router.get('/', async (req, res) => {
     try {
-        let productos = await pm.getProducts();
-        let limit = req.query.limit;
-        if (limit && limit > 0) {
-            productos = productos.slice(0, limit);
-        }
-        res.render('index', { pageTitle: 'Lista de Productos', productos }); // Render the 'index' view with the list of products
+        res.render('chat', { pageTitle: 'Chat Service'}); // Render the 'index' view with the list of products
     } catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
     }
