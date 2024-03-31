@@ -1,1 +1,4 @@
 cd /Users/tomzavrsnik/Desktop/CoderReactJs/Curso\ coder\ backend/Primerentrega-Sofia\ Melian/src
+
+
+mongodb+srv://sofiamelian:40812518@cluster0.b4psxss.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0

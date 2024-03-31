@@ -1,6 +1,11 @@
-const ProductModel = require('./dao/models/productos.modelo'); 
+const modeloProductos = require('./dao/models/productos.modelo'); 
 
 class ProductManager {
+  constructor() {
+    //this.productos = [];
+    //this.path = "./productos.json";
+  }
+
   async addProduct(title, description, price, thumbnail, code, stock) {
     try {
       if (!title || !description || !price || !thumbnail || !code || !stock) {
@@ -26,7 +31,7 @@ class ProductManager {
 
   async getProducts() {
     try {
-      const productos = await ProductModel.find();
+      const productos = await modeloProductos.find();
       return productos;
     } catch (error) {
       console.error("Error al obtener los productos:", error);

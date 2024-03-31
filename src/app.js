@@ -43,24 +43,6 @@ app.use('/chat', chatRouter);
 app.use('/realTimeProducts', realTimeProducts);
 
 
-const connect = (async ()=>{
-  try {
-    await  mongoose.connect('mongodb+srv://sofiamelian:40812518@cluster0.b4psxss.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',{
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true, // chat gtp
-    }); 
-  } catch(error) {
- console.log ("hay un error en mongoose",error)
-  }
-});
-connect();
-
-const connection = mongoose.connection;
-
-connection.once('open', () => {
-  console.log('Conexión establecida con la base de datos MongoDB');
-});
  
 const serverHttp = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
@@ -92,3 +74,19 @@ io.on("connection", socket => {
 
 })
 
+
+const connect = (async ()=>{
+  try {
+    await  mongoose.connect('mongodb+srv://sofiamelian:40812518@cluster0.b4psxss.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',{dbName:"eCommerce"
+    }); 
+  } catch(error) {
+ console.log ("hay un error en mongoose",error)
+  }
+});
+connect();
+
+const connection = mongoose.connection;
+
+connection.once('open', () => {
+  console.log('Conexión establecida con la base de datos MongoDB');
+});
