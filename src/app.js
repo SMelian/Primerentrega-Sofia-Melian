@@ -12,6 +12,7 @@ const realTimeProducts = require("./routes/realTimeproduct.router");
 
 const pm = new ProductManager("./productos.json");
 const cm = new CarritoManager("./carrito.json");
+const Mensaje = require('./models/mensaje.modelo'); 
 
 const PORT = 8080;
 let serverSocket;
@@ -66,9 +67,19 @@ io.on("connection", socket => {
 
   })
 
-  socket.on("mensaje",(nombre,mensaje)=>{
-     mensajes.push({nombre,mensaje})
-     io.emit("nuevoMensaje",nombre,mensaje)
+  //socket.on("mensaje",(nombre,mensaje)=>{
+    // mensajes.push({nombre,mensaje})
+     //io.emit("nuevoMensaje",nombre,mensaje)
+
+     socket.on("mensaje",(nombre, mensaje)=>{
+      const nuevoMensaje = new Mensaje({ nombre, mensaje }); // Crea un nuevo mensaje utilizando el modelo Mongoose
+      nuevoMensaje.save() // Guarda el nuevo mensaje en la base de datos MongoDB
+        .then(() => {
+          io.emit("nuevoMensaje", nombre, mensaje);
+        })
+        .catch(error => {
+          console.error("Error al guardar el nuevo mensaje:", error);
+        });
 
   })
 

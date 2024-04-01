@@ -1,4 +1,6 @@
 //const { Socket } = require("socket.io");
+const Mensaje = require('./models/mensaje.modelo');
+
 Swal.fire({
     title: 'Hello!',
     input: "text",
@@ -19,12 +21,18 @@ Swal.fire({
     const socket =io();
 
     socket.emit("presentation", nombre)
-    socket.on ("historial", mensajes =>{
-    mensajes.forEach(m => {
-        divMensaje.innerHTML+= `<strong>${m.nombre}: ${m.mensaje} </strong> <br>`
-        
-         })
-      })
+    socket.on ("historial", async mensajes =>{
+        try{
+            const historialMensajes = await Mensaje.find();
+
+            historialMensajes.forEach(m => {
+                divMensaje.innerHTML+= `<strong>${m.nombre}: ${m.mensaje} </strong> <br>`
+                
+                });
+        } catch (error) {
+                console.error("Error al obtener el historial de mensajes:", error);
+              }          
+            })
 
     socket.on ("nuevoUsuario",nombre=>{
         Swal.fire({
@@ -33,9 +41,16 @@ Swal.fire({
             position:"top-right",
         })
     })
-    socket.on ("nuevoMensaje",(nombre,mensaje)=>{
+    socket.on ("nuevoMensaje",async (nombre,mensaje)=>{
         divMensaje.innerHTML+= `<strong>${nombre}: ${mensaje} </strong> <br>`
-    })
+        try {
+            const nuevoMensaje = new Mensaje({ nombre, mensaje });
+            await nuevoMensaje.save();
+          } catch (error) {
+            console.error("Error al guardar el nuevo mensaje:", error);
+          }
+        });
+      
     inputMensaje.addEventListener("keyup", e => {
         e.preventDefault();
         if (e.code === "Enter" && e.target.value.trim().length > 0) {
@@ -57,5 +72,4 @@ const socket =io();
 
 } )*/
 
-alert('hola')
 
