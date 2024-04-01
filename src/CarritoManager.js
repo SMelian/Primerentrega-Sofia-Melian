@@ -1,48 +1,65 @@
 const fs = require('fs');
-    
+const modeloCart = require ('./dao/models/cart.modelo')
+
     class CarritoManager {
         constructor(cartFilePath) {
-            this.cartFilePath = cartFilePath;
-            this.cart = this.loadCartData();
+            //this.cartFilePath = cartFilePath;
+           // this.cart = this.loadCartData();
         }
     
-        loadCartData() {
+       async loadCartData() {
             try {
-                const cartData = fs.readFileSync(this.cartFilePath, 'utf-8');
-                return JSON.parse(cartData);
+               // const cartData = fs.readFileSync(this.cartFilePath, 'utf-8');
+               const cart = await modeloCart.find();
+                //return JSON.parse(cartData);
+                return cart;
             } catch (error) {
-                // If file doesn't exist or cannot be read, return an empty array
-                return [];
+                console.error("Error al obtener el producto por id:", error);
             }
         }
     
-        saveCartData() {
+       async saveCartData() {
             try {
-                fs.writeFileSync(this.cartFilePath, JSON.stringify(this.cart, null, 2));
+                //fs.writeFileSync(this.cartFilePath, JSON.stringify(this.cart, null, 2));
+               // await CartModel.deleteMany(); // Es una estrategia pero no se si limpiar el carrito antes de guardar los nuevos datos es buena idea-Investigar.
+                await modeloCart.insertMany(cartItems);
             } catch (error) {
                 console.error('Error writing cart data:', error);
             }
         }
 
-    addToCart(productId) {
+ async   addToCart(productId) {
 //verificar que el producto no este en el array nuevo
-        const existingProductIndex = this.cart.findIndex(item => item.productId === productId);
-//si esta, incrementa
-        if (existingProductIndex !== -1) {
-       
-            this.cart[existingProductIndex].quantity++;
+        //const existingProductIndex = this.cart.findIndex(item => item.productId === productId);
+        const existingProductIndex  = modeloCart.findById();
+        //si esta, incrementa
+       // if (existingProductIndex !== -1) {
+       if (existingProductIndex) = {
+
+       existingProductIndex.quantity++;
+       await existingProductIndex.save();
+           // this.cart[existingProductIndex].quantity++;
         } else {
 //sino esta 1           
-            this.cart.push({ productId, quantity: 1 });
+           // this.cart.push({ productId, quantity: 1 });
+           await modeloCart.create({ _id: productId, quantity: 1 });
+
         }
-        this.saveCartData();
+    } catch (error) {
+        console.error('Error adding product to cart:', error);
     }
 
-    removeFromCart(productId) {
-        this.cart = this.cart.filter(item => item.productId !== productId);
-        this.saveCartData();
+   async removeFromCart(productId) {
+     //   this.cart = this.cart.filter(item => item.productId !== productId);
+    //    this.saveCartData();
+    try{
+        await modeloCart.findByIdAndRemove(productId);
+
+    } catch {
+        console.error('Error removing product from cart:', error);
     }
-    
+    }
+
 }
 
 module.exports = CarritoManager;

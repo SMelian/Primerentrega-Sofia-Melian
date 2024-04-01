@@ -1,4 +1,4 @@
-const modeloProductos = require('./dao/models/productos.modelo'); 
+const modeloProductos = require('./dao/models/productos.modelo');
 
 class ProductManager {
   constructor() {
@@ -12,7 +12,7 @@ class ProductManager {
         throw new Error("Por favor complete todos los campos");
       }
 
-      const newProduct = new ProductModel({
+      const newProduct = new modeloProductos({
         title: title,
         description: description,
         price: price,
@@ -41,7 +41,7 @@ class ProductManager {
 
   async getProductById(id) {
     try {
-      const product = await ProductModel.findById(id);
+      const product = await modeloProductos.findById(id);
       if (!product) {
         throw new Error(`No existen productos con el id ${id}`);
       }
@@ -54,7 +54,7 @@ class ProductManager {
 
   async updateProductById(id, newData) {
     try {
-      const updatedProduct = await ProductModel.findByIdAndUpdate(id, newData, { new: true });
+      const updatedProduct = await modeloProductos.findByIdAndUpdate(id, newData, { new: true });
       if (!updatedProduct) {
         throw new Error(`No existen productos con el id ${id}`);
       }
@@ -68,7 +68,7 @@ class ProductManager {
 
   async deleteProductById(id) {
     try {
-      const deletedProduct = await ProductModel.findByIdAndDelete(id);
+      const deletedProduct = await modeloProductos.findByIdAndDelete(id);
       if (!deletedProduct) {
         throw new Error(`No existen productos con el id ${id}`);
       }
@@ -82,3 +82,14 @@ class ProductManager {
 }
 
 module.exports = ProductManager;
+
+const manager = new ProductManager();
+console.log(manager.getProducts());
+manager.addProduct(
+  "Producto 1",
+  "Descripción 1",
+  10.99,
+  "imagen1.jpg",
+  "ABC123",
+  100
+);
