@@ -21,15 +21,17 @@ router.get('/', async (req, res) => {
 
   router.post('/', async (req, res) => {
     try {
-        const { title, description, code, price, status, stock, category, thumbnails } = req.body;
-        if (!title || !description || !code || !price || !status || !stock || !category || !thumbnails) {
+        const { title, description, price, thumbnail, code, stock } = req.body;
+        if (!title || !description || !code || !price || !stock ) {
             return res.status(400).json({ error: "All fields are required" });
         }
-        const newProduct = await pm.addProduct(title, description, code, price, status, stock, category, thumbnails);
+        const newProduct = await pm.addProduct(title, description, price, thumbnail, code, stock);
+       
         //res.status(201).json(newProduct);
-        req.io.emit("NewProduct",newProduct)
+       // req.io.emit("NewProduct",newProduct)
     } catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
+
     }
 });
 module.exports = router;

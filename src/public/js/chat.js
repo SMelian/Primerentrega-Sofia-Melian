@@ -1,5 +1,5 @@
 //const { Socket } = require("socket.io");
-const Mensaje = require('./models/mensaje.modelo');
+//const Mensaje = require('./dao/model/chat.modelo');
 
 Swal.fire({
     title: 'Hello!',
@@ -22,17 +22,11 @@ Swal.fire({
 
     socket.emit("presentation", nombre)
     socket.on ("historial", async mensajes =>{
-        try{
-            const historialMensajes = await Mensaje.find();
 
-            historialMensajes.forEach(m => {
-                divMensaje.innerHTML+= `<strong>${m.nombre}: ${m.mensaje} </strong> <br>`
-                
-                });
-        } catch (error) {
-                console.error("Error al obtener el historial de mensajes:", error);
-              }          
-            })
+    mensajes.forEach(element => {
+        divMensaje.innerHTML+= `<strong>${m.nombre}: ${m.mensaje} </strong> <br>`
+                 });
+            });
 
     socket.on ("nuevoUsuario",nombre=>{
         Swal.fire({
@@ -43,12 +37,6 @@ Swal.fire({
     })
     socket.on ("nuevoMensaje",async (nombre,mensaje)=>{
         divMensaje.innerHTML+= `<strong>${nombre}: ${mensaje} </strong> <br>`
-        try {
-            const nuevoMensaje = new Mensaje({ nombre, mensaje });
-            await nuevoMensaje.save();
-          } catch (error) {
-            console.error("Error al guardar el nuevo mensaje:", error);
-          }
         });
       
     inputMensaje.addEventListener("keyup", e => {

@@ -2,9 +2,14 @@
 <p>listado de productos</p>
 <hr>
 <ul>
+
+<h3>Listado de Productos</h3>
+
 {{#each productos}}
- <li>{{description}}
+<form action="/carrito/{{this.id}}" method="post">
+ <li>{{title}} - {{description}}
  <button class="addToCartBtn" data-productid="{{id}}">Agregar al carrito</button>
+</form>
 {{/each}}
 </ul>
  

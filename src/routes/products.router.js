@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/Products/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
       const productId = parseInt(req.params.id);
       const product = await pm.getProductById(productId);

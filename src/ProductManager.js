@@ -8,7 +8,7 @@ class ProductManager {
 
   async addProduct(title, description, price, thumbnail, code, stock) {
     try {
-      if (!title || !description || !price || !thumbnail || !code || !stock) {
+      if (!title || !description || !price || !code || !stock) {
         throw new Error("Por favor complete todos los campos");
       }
 
@@ -31,8 +31,8 @@ class ProductManager {
 
   async getProducts() {
     try {
-      const productos = await modeloProductos.find();
-      return productos;
+      const products = await modeloProductos.find().lean();
+      return products;
     } catch (error) {
       console.error("Error al obtener los productos:", error);
       throw error;
@@ -41,7 +41,7 @@ class ProductManager {
 
   async getProductById(id) {
     try {
-      const product = await modeloProductos.findById(id);
+      const product = await modeloProductos.findById(id).lean();
       if (!product) {
         throw new Error(`No existen productos con el id ${id}`);
       }
@@ -54,7 +54,7 @@ class ProductManager {
 
   async updateProductById(id, newData) {
     try {
-      const updatedProduct = await modeloProductos.findByIdAndUpdate(id, newData, { new: true });
+      const updatedProduct = await modeloProductos.findByIdAndUpdate(id, newData, { new: true }).lean();
       if (!updatedProduct) {
         throw new Error(`No existen productos con el id ${id}`);
       }
@@ -68,7 +68,7 @@ class ProductManager {
 
   async deleteProductById(id) {
     try {
-      const deletedProduct = await modeloProductos.findByIdAndDelete(id);
+      const deletedProduct = await modeloProductos.findByIdAndDelete(id).lean();
       if (!deletedProduct) {
         throw new Error(`No existen productos con el id ${id}`);
       }
@@ -83,7 +83,7 @@ class ProductManager {
 
 module.exports = ProductManager;
 
-const manager = new ProductManager();
+/*const manager = new ProductManager();
 console.log(manager.getProducts());
 manager.addProduct(
   "Producto 1",
@@ -92,4 +92,4 @@ manager.addProduct(
   "imagen1.jpg",
   "ABC123",
   100
-);
+);*/

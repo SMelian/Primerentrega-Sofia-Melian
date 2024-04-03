@@ -1,10 +1,15 @@
 const mongoose = require('mongoose');
 
+const mensajeColl="Mensaje";
+
 const mensajeSchema = new mongoose.Schema({
   nombre: String,
-  mensaje: String
+  mensaje: String,
+},
+{
+timestamps:true,
 });
 
-const Mensaje = mongoose.model('Mensaje', mensajeSchema);
 
-module.exports = Mensaje;
+module.exports = mongoose.model(mensajeColl,mensajeSchema);
+

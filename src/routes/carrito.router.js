@@ -8,15 +8,15 @@ router.get('/', (req, res) => {
     const cart = cm.loadCartData();
     res.render('carrito', { pageTitle: 'Carrito de Compras', cart });
 });
-router.get('/:cid', (req, res) => {
+router.get('/:cartId', (req, res) => {
     const cartId = req.params.cid;
     res.json(productosDelCarrito);
 });
 
-router.post('/api/cart/add/:productId', (req, res) => {
-    const productId = req.params.productId;
-
+router.post('/:productId', (req, res) => {
+    
     try {
+        const productId = req.params.productId;
         // Agregar el producto al carrito
         cm.addToCart(productId);
         
