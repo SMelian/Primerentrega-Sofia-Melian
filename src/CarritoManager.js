@@ -1,5 +1,6 @@
 //const fs = require('fs');
 const modeloCart = require ('./dao/models/cart.modelo')
+const modeloProductos = require('./dao/models/productos.modelo'); 
 
     class CarritoManager {
         constructor(cartFilePath) {
@@ -30,20 +31,29 @@ const modeloCart = require ('./dao/models/cart.modelo')
 
         async addToCart(productId) {
             try {
-                // Find the product by productId
+                // Find the product by productId in the productos collection
+                const product = await modeloProductos.findById(productId).lean();
+    
+                if (!product) {
+                    console.error('Product not found in productos collection');
+                    return;
+                }
+    
+                // Find the product by productId in the cart collection
                 const existingProduct = await modeloCart.findById(productId).lean();
+    
                 if (existingProduct) {
-                    // If the product exists, increment its quantity
+                    // If the product exists in the cart, increment its quantity
                     existingProduct.quantity++;
-                    await existingProduct.save();
+                    await modeloCart.findByIdAndUpdate(existingProduct._id, { quantity: existingProduct.quantity });
                 } else {
-                    // If the product doesn't exist, create a new entry
-                    await modeloCart.create({ _id: productId, quantity: 1 });
+                    // If the product doesn't exist in the cart, create a new entry
+                    await modeloCart.create({ _id: productId, title: product.title, description: product.description, quantity: 1 });
                 }
             } catch (error) {
                 console.error('Error adding product to cart:', error);
             }
-        }        
+        }
 
    async removeFromCart(productId) {
      //   this.cart = this.cart.filter(item => item.productId !== productId);
