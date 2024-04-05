@@ -8,10 +8,21 @@ router.get('/', (req, res) => {
     const cart = cm.loadCartData();
     res.render('carrito', { pageTitle: 'Carrito de Compras', cart });
 });
-router.get('/:cartId', (req, res) => {
-    const cartId = req.params.cartId;
-    res.json(productosDelCarrito);
-});
+router.get('/:cartId', async (req, res) => {
+    
+    try {
+        const cartId = req.params.cartId;
+        const cart = await cm.loadCartData(cartId);
+
+        if (!cart) {
+            return res.status(404).json({ error: "Product not found" });
+          }
+          res.render('cartId', { pageTitle: 'Producto elegido', cart }); // Render the 'index' view with the list of products
+         
+        } catch (error) {
+          res.status(500).json({ error: "Internal Server Error" });
+        }
+      })
 
 router.post('/:productId', (req, res) => {
     
