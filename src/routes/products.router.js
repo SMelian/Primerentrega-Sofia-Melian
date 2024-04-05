@@ -34,9 +34,9 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:productId', async (req, res) => {
     try {
-      const productId = parseInt(req.params.id);
+      const productId = req.params.productId;
       const product = await pm.getProductById(productId);
       
       if (!product) {

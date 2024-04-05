@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
     res.render('carrito', { pageTitle: 'Carrito de Compras', cart });
 });
 router.get('/:cartId', (req, res) => {
-    const cartId = req.params.cid;
+    const cartId = req.params.cartId;
     res.json(productosDelCarrito);
 });
 

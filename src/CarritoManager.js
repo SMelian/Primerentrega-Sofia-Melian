@@ -10,7 +10,7 @@ const modeloCart = require ('./dao/models/cart.modelo')
        async loadCartData() {
             try {
                // const cartData = fs.readFileSync(this.cartFilePath, 'utf-8');
-               const cart = await modeloCart.find();
+               const cart = await modeloCart.find().lean();
                 //return JSON.parse(cartData);
                 return cart;
             } catch (error) {

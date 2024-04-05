@@ -38,7 +38,7 @@ app.use("/api/productos", (req, res, next) => {
   next();
 }, productRouter);
 
-app.use('/',productRouter);
+app.use('/productos',productRouter);
 app.use('/realTimeProducts', realTimeProducts);
 app.use('/carrito', carritoRouter); 
 app.use('/chat', chatRouter); 

@@ -1,7 +1,9 @@
-    <h2>{{ product.title }}</h2>
-    <p>Price: ${{ product.price }}</p>
+    <h1>{{pageTitle}}</h1>
+    <ul>
+        {{#each cart}}
+            <li>{{this.title}} - {{this.description}} - ${{this.price}}</li>
+        {{/each}}
+    </ul>
 
-    <script src="/socket.io/socket.io.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script src="/js/agregarproducto.js"></script>
-<script src="/js/chat.js"></script>
