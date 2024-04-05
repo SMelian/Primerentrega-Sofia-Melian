@@ -31,7 +31,7 @@ const modeloCart = require ('./dao/models/cart.modelo')
         async addToCart(productId) {
             try {
                 // Find the product by productId
-                const existingProduct = await modeloCart.findById(productId);
+                const existingProduct = await modeloCart.findById(productId).lean();
                 if (existingProduct) {
                     // If the product exists, increment its quantity
                     existingProduct.quantity++;
