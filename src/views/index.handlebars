@@ -18,6 +18,13 @@
 
 </ul>
 
+{{#if hasPrevPage}}
+  <a href="?page={{prevPage}}">Página anterior</a>
+{{/if}}
+&nbsp;&nbsp;&nbsp;&nbsp;
+{{#if hasNextPage}}
+  <a href="?page={{nextPage}}">Página siguiente</a>
+{{/if}}
  
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
