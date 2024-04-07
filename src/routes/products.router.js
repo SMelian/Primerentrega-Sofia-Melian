@@ -61,8 +61,7 @@ router.get('/:productId', async (req, res) => {
       if (!product) {
         return res.status(404).json({ error: "Product not found" });
       }
-      res.render('product', { pageTitle: 'Producto elegido', product }); // Render the 'index' view with the list of products
-     
+      res.render('productoId', { pageTitle: 'Producto elegido', product });
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
     }

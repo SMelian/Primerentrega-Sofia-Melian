@@ -1,16 +1,21 @@
-<h2>Pagina principal</h2>
-<p>listado de productos</p>
-<hr>
-<ul>
 
 <h3>Listado de Productos</h3>
 
-{{#each productos}}
-<form action="/carrito/{{this.id}}" method="post">
- <li>{{title}} - {{description}}
- <button class="addToCartBtn" data-productid="{{id}}">Agregar al carrito</button>
-</form>
-{{/each}}
+
+<ul>
+  {{#each productos}}
+    <li>
+      <form action="/carrito/{{this.id}}" method="post">
+        {{title}} - {{description}}
+        <button type="submit" data-productid="{{id}}">Agregar al carrito</button>
+      </form>
+
+      <form action="/productos/{{this.id}}" method="GET">
+        <button type="submit">Detalles producto</button>
+      </form>
+    </li>
+  {{/each}}
+
 </ul>
 
  

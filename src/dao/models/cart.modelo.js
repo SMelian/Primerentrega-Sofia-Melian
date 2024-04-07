@@ -8,7 +8,7 @@ const cartColl ="Carrito"
 const cartSchema = new mongoose.Schema({
   // Define las propiedades del carrito
   title: { type: String, required: true }, // Título del carrito
-  products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'productos' }] // Array de productos en el carrito
+  products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Productos' }] // Array de productos en el carrito
 },{
     timestamps:true
 });

@@ -1,4 +1,7 @@
-
-<h1>{{pageTitle}}</h1>
-<p>title: {{cart.title}}</p>
+<h3>{{pageTitle}}</h3>
+<ul>
+  {{#each cart.products}}
+  <li>{{this.title}} - Precio: ${{this.price}}</li>
+  {{/each}}
+</ul>
 
