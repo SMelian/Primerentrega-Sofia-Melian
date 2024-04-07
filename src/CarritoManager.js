@@ -13,7 +13,7 @@ const modeloProductos = require('./dao/models/productos.modelo');
                // const cartData = fs.readFileSync(this.cartFilePath, 'utf-8');
                const cart = await modeloCart.find().lean();
                 return cart;
-                
+
             } catch (error) {
                 console.error("Error al obtener el producto por id:", error);
             }
@@ -29,7 +29,7 @@ const modeloProductos = require('./dao/models/productos.modelo');
             }
         }
 
-        async addToCart(productId) {
+   /*    VIEJO  async addToCart(productId) {
             try {
                 // Find the product by productId in the productos collection
                 const product = await modeloProductos.findById(productId).lean();
@@ -54,6 +54,44 @@ const modeloProductos = require('./dao/models/productos.modelo');
                 console.error('Error adding product to cart:', error);
             }
         }
+
+*/
+
+async addToCart(cartId, productId, title) {
+    try {
+        // Check if a cart with the given ID exists
+        let cart = await modeloCart.findById(cartId);
+
+        // If cart doesn't exist, create a new one with the provided title or a default title
+        if (!cart) {
+            const cartData = { products: [] };
+            if (title) {
+                cartData.title = title;
+            } else {
+                cartData.title = 'Default Cart';
+            }
+            cart = await modeloCart.create(cartData);
+        }
+
+        // Find the product by productId in the productos collection
+        const product = await modeloProductos.findById(productId).lean();
+
+        if (!product) {
+            console.error('Product not found in productos collection');
+            return;
+        }
+
+        // Add the product to the cart
+        cart.products.push(productId);
+        await cart.save();
+
+        console.log('Product added to cart successfully');
+    } catch (error) {
+        console.error('Error adding product to cart:', error);
+        throw error; // Rethrow the error to handle it in the router
+    }
+}
+
 
 
     async deleteMany () {
