@@ -1,4 +1,5 @@
 const modeloProductos = require('./dao/models/productos.modelo');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 class ProductManager {
   constructor() {
@@ -29,7 +30,7 @@ class ProductManager {
     }
   }
 
-  async getProducts() {
+  async getProductsViejo() {
     try {
       const products = await modeloProductos.find().lean();
       return products;
@@ -38,6 +39,25 @@ class ProductManager {
       throw error;
     }
   }
+
+  async getProducts(options) {
+    try {
+      const { limit = 10, page = 1 } = options;
+      const products = await modeloProductos.paginate({}, {
+        ...options,
+        limit: parseInt(limit),
+        page: parseInt(page),
+       // sort: sort ? JSON.parse(sort) : { createdAt: -1 },
+        lean: true 
+      });
+      return products;
+    } catch (error) {
+      console.error("Error al obtener los productos:", error);
+      throw error;
+    }
+  }
+
+
 
   async getProductById(id) {
     try {

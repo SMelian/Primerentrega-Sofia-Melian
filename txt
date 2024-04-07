@@ -1,4 +1,61 @@
 cd /Users/tomzavrsnik/Desktop/CoderReactJs/Curso\ coder\ backend/Primerentrega-Sofia\ Melian/src
 
 
-mongodb+srv://sofiamelian:40812518@cluster0.b4psxss.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+// mongodb+srv://sofiamelian:40812518@cluster0.b4psxss.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+
+
+/*carrito viejo:
+const mongoose = require('mongoose');
+
+const cartColl ="Carrito"
+
+const cartSchema = new mongoose.Schema({
+  // Define las propiedades del carrito
+  title: { type: String, required: true }, // Título del carrito
+  productos: [productoSchema] // Array de productos en el carrito
+});
+
+const cartSchema = new mongoose.Schema({
+  title: String,
+  price: Number,
+  code: String,
+  stock: Number,
+},{
+    timestamps:true
+});
+
+//module.export const modeloProductos = mongoose.model(productColl,productSchema)
+module.exports = mongoose.model(cartColl, cartSchema);
+
+
+ROUTER  PRODUCTOS VIEJO:
+router.get('/', async (req, res) => {
+  try {
+      let productos = await pm.getProducts();
+      let limit = req.query.limit;
+      if (limit && limit > 0) {
+          productos = productos.slice(0, limit);
+      }
+      res.render('index', { pageTitle: 'Lista de Productos', productos }); // Render the 'index' view with the list of products
+  } catch (error) {
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+*/
+
+// router.get('/Products', async (req, res) => {
+//     try {
+//       let productos = await pm.getProducts();
+//       let limit = req.query.limit;
+//       if (limit && limit > 0) {
+//         productos = productos.slice(0, limit);
+//       }
+      
+//       //res.json(productos);
+//       res.render('index', { pageTitle: 'Lista de Productos', productos }); //render para que muestre productos como listado
+
+//     } catch (error) {
+//       res.status(500).json({ error: "Internal Server Error" });
+//     }
+//   });

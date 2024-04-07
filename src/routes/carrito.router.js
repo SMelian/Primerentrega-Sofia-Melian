@@ -51,13 +51,53 @@ router.post('/:productId', async (req, res) => {
     }
 });
 
-router.delete('/:id/eliminar', (req, res) => {
-    const productId = req.params.id;
 
-    // Eliminar el producto
-    cm.removeFromCart(productId);
+router.delete('/', async (req, res) => {
+    try {
+        // eliminación masiva
+        const resultado = await cm.deleteMany({});
 
-    res.status(204).send();
+        // Verifica si se eliminaron todos 
+        if (resultado.deletedCount > 0) {
+            res.status(200).json({ message: 'Todos los carritos han sido eliminados' });
+        } else {
+            res.status(404).json({ message: 'No se encontraron carritos para eliminar' });
+        }
+    } catch (error) {
+        console.error('Error al eliminar carritos:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+
+router.delete('/:cid/products', async (req, res) => {
+    try {
+        const cartId = req.params.cid;
+        //const productId = req.params.pid;
+
+        // Remove the product from the cart
+        await cm.removeFromCart(cartId);
+
+        res.status(204).send();
+    } catch (error) {
+        console.error('Error removing product from cart:', error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+router.put('/:cid', async (req, res) => {
+    try {
+        const cartId = req.params.cid;
+        const products = req.body.products; // Assuming the request body contains an array of products
+
+        // Update the cart with the provided array of products
+        await cm.updateCart(cartId, products);
+
+        res.status(200).json({ message: "Cart updated successfully" });
+    } catch (error) {
+        console.error('Error updating cart:', error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
 
 module.exports = router;
