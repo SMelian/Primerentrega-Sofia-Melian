@@ -2,6 +2,11 @@ const express = require("express");
 const mongoose = require('mongoose');
 const handlebars = require('express-handlebars');
 const {Server} = require ("socket.io");
+const session = require('express-session');
+const fileStore = require('session-file-store');
+const FileStore = require('session-file-store')(session);
+const MongoStore = require ('connect-mongo');
+
 const ProductManager = require("./ProductManager");
 const CarritoManager = require("./CarritoManager");
 const path = require("path"); 
@@ -9,6 +14,8 @@ const productRouter = require("./routes/products.router");
 const carritoRouter = require("./routes/carrito.router");
 const chatRouter = require("./routes/chat.router");
 const realTimeProducts = require("./routes/realTimeProduct.router");
+const sessionRouter = require('./routes/session.router')
+const cookieParser = require('cookie-parser');
 
 const pm = new ProductManager("./productos.json");
 const cm = new CarritoManager("./carrito.json");
@@ -29,9 +36,26 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
+
 app.use(express.static(path.join(__dirname,"public")));
 
+app.use(cookieParser("EContraLjSlo")); //aca la "enchufo"
 
+app.use(session(
+  {
+// este para el fileStore    store: new FileStore({ path: './sessions', ttl: 100, retries: 0 }),
+//Mongo
+  store: MongoStore.create({
+    mongoUrl: "mongodb+srv://sofiamelian:40812518@cluster0.b4psxss.mongodb.net/eCommerce?retryWrites=true&w=majority&appName=Cluster0",
+
+    ttl:15
+   } ),
+  secret:'coderSecret',
+  resave:true,
+  saveUninitialized:true,
+}
+))
 
 app.use("/api/productos", (req, res, next) => {
   req.io = io;
@@ -42,8 +66,7 @@ app.use('/productos',productRouter);
 app.use('/realTimeProducts', realTimeProducts);
 app.use('/carrito', carritoRouter); 
 app.use('/chat', chatRouter); 
-
-
+app.use('/api/session',sessionRouter);
 
  
 const serverHttp = app.listen(PORT, () => {
@@ -66,7 +89,22 @@ connection.once('open', () => {
   console.log('Conexión establecida con la base de datos MongoDB');
 });
 
+app.get('/setCookie',(req,res)=>{
+  res.cookie('CookieName','el valor de la cookie').send("Cookie")
+})
 
+app.get('/setSignedCookie',(req,res)=>{
+  res.cookie('CookieName','el valor de la cookie con Signature',{maxAge:1000000,signed:true}).send("Cookie")
+})
+
+
+app.get('/getCookie',(req,res)=>{
+  res.send(req.cookies); // aca estaria accediendo a todas las cookies pero puedo acceder a una especifica si al final de esto agrego ".nombre de la cookie"
+})
+
+app.get('/deletetCookie',(req,res)=>{
+  res.clearCookie('CoderCookie').send('Cookie Removed'); // aca estaria accediendo a todas las cookies pero puedo acceder a una especifica si al final de esto agrego ".nombre de la cookie"
+})
 
 
 // Initialize Socket.io server

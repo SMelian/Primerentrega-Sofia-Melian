@@ -1,14 +1,18 @@
 const { Router } = require("express");
+const Auth = require('../auth');
 const ProductManager = require("../ProductManager"); //me faltaba esto la entrega anterior
+
 
 const router = Router();
 
 const pm = new ProductManager(); // instancia - "./productos.json"
 
 
-router.get('/', async (req, res) => {
+router.get('/',Auth, async (req, res) => {
     try {
-       // let { limit = 10, page = 1, sort, query } = req.query;
+
+        let usuario = req.session.user
+        // let { limit = 10, page = 1, sort, query } = req.query;
         let { limit = 10, page = 1, query } = req.query;
 
         limit = parseInt(limit);
@@ -36,6 +40,7 @@ router.get('/', async (req, res) => {
 
 
         res.render('index', {
+            usuario,
             pageTitle: 'Lista de Productos',
             productos: currentPageProducts,
             totalPages: totalPages,
@@ -53,7 +58,7 @@ router.get('/', async (req, res) => {
 
 
 
-router.get('/:productId', async (req, res) => {
+router.get('/:productId', Auth, async (req, res) => {
     try {
       const productId = req.params.productId;
       const product = await pm.getProductById(productId);
@@ -67,7 +72,7 @@ router.get('/:productId', async (req, res) => {
     }
   })
 
-  router.post('/', async (req, res) => {
+  router.post('/', Auth, async (req, res) => {
     try {
         const { title, description, code, price, status, stock, category, thumbnails } = req.body;
         if (!title || !description || !code || !price || !status || !stock || !category || !thumbnails) {
@@ -81,7 +86,7 @@ router.get('/:productId', async (req, res) => {
     }
 });
 
-router.post('/api/productos', async (req, res) => {
+router.post('/api/productos',Auth, async (req, res) => {
     try {
         const { title, description, price, thumbnail, code, stock} = req.body;
 
@@ -96,7 +101,7 @@ router.post('/api/productos', async (req, res) => {
     }
 });
 
- router.put('/:id', async (req, res) => {
+ router.put('/:id', Auth, async (req, res) => {
     try {
         const productId = req.params.id;
         const updatedFields = req.body;
