@@ -6,7 +6,6 @@ const session = require('express-session');
 const fileStore = require('session-file-store');
 const FileStore = require('session-file-store')(session);
 const MongoStore = require ('connect-mongo');
-
 const ProductManager = require("./ProductManager");
 const CarritoManager = require("./CarritoManager");
 const path = require("path"); 

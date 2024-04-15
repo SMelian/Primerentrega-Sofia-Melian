@@ -1,6 +1,8 @@
 const { Router } = require("express");
 const Auth = require('../auth');
 const User = require('../dao/models/User.modelo');
+const { createHash, isValidPassword } = require('../utils');
+
 
 const router = Router();
 
@@ -13,7 +15,10 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const { first_name, last_name, email, age, password } = req.body;
-        const user = new User({ first_name, last_name, email, age, password });
+        if ( !first_name || !last_name || !email || !age || !password )return res.status(400).send(error.message);
+        const hashedPassword = await createHash(password);        
+        
+        const user = new User({ first_name, last_name, email, age, password:hashedPassword });
         await user.save();
         //res.send('Usuario registrado exitosamente');
         res.redirect('/api/session/login');
@@ -42,13 +47,26 @@ router.post('/login', async (req, res) => {
             // Redireccionar al panel de administrador
             return res.redirect('/api/session/adminUser');
         }
-
-
+        
+  
 
         const user = await User.findOne({ email, password });
         if (!user) {
             throw new Error('Credenciales incorrectas');
         }
+
+        // Log the retrieved user and hashed password
+        console.log('Retrieved user:', user);
+        console.log('Retrieved hashed password:', user.password);
+
+        // Check if the password is valid
+        const isPasswordValid = await isValidPassword(password, user.password);
+        console.log('Is password valid?', isPasswordValid);
+
+        if (!isPasswordValid) {
+            throw new Error('Credenciales incorrectas');
+        }
+
         // Establecer el objeto user en req.session
         req.session.user = user;
 
