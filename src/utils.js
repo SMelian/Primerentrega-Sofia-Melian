@@ -15,7 +15,7 @@ const isValidPassword = async (password, hashedPassword) => {
 }
 
 module.exports = {
-    isValidPassword,
     createHash,
+    isValidPassword,
     rutaProductos
 };

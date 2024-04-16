@@ -6,6 +6,9 @@ const session = require('express-session');
 const fileStore = require('session-file-store');
 const FileStore = require('session-file-store')(session);
 const MongoStore = require ('connect-mongo');
+const passport = require('passport');
+const initializePassport = require('./config/passport.config');
+
 const ProductManager = require("./ProductManager");
 const CarritoManager = require("./CarritoManager");
 const path = require("path"); 
@@ -55,6 +58,11 @@ app.use(session(
   saveUninitialized:true,
 }
 ))
+
+app.use(passport.initialize());
+app.use(passport.session());
+initializePassport(passport);
+
 
 app.use("/api/productos", (req, res, next) => {
   req.io = io;
