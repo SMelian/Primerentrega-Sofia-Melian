@@ -16,7 +16,10 @@ router.post('/', async (req, res) => {
     try {
         const { first_name, last_name, email, age, password } = req.body;
         if ( !first_name || !last_name || !email || !age || !password )return res.status(400).send(error.message);
-        const hashedPassword = await createHash(password);        
+        const hashedPassword = await createHash(password);
+
+        console.log('Hashed password:', hashedPassword);
+        
         
         const user = new User({ first_name, last_name, email, age, password:hashedPassword });
         await user.save();
@@ -50,9 +53,9 @@ router.post('/login', async (req, res) => {
         
   
 
-        const user = await User.findOne({ email, password });
+        const user = await User.findOne({ email });
         if (!user) {
-            throw new Error('Credenciales incorrectas');
+            throw new Error('Usuario no encontrado');
         }
 
         // Log the retrieved user and hashed password
