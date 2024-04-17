@@ -16,7 +16,8 @@ const productRouter = require("./routes/products.router");
 const carritoRouter = require("./routes/carrito.router");
 const chatRouter = require("./routes/chat.router");
 const realTimeProducts = require("./routes/realTimeProduct.router");
-const sessionRouter = require('./routes/session.router')
+const sessionRouter = require('./routes/session.router');
+const viewsRouter = require('./routes/views.router')
 const cookieParser = require('cookie-parser');
 
 const pm = new ProductManager("./productos.json");
@@ -73,6 +74,7 @@ app.use('/productos',productRouter);
 app.use('/realTimeProducts', realTimeProducts);
 app.use('/carrito', carritoRouter); 
 app.use('/chat', chatRouter); 
+app.use('/',viewsRouter);
 app.use('/api/session',sessionRouter);
 
  

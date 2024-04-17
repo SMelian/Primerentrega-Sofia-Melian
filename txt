@@ -1,5 +1,14 @@
 cd /Users/tomzavrsnik/Desktop/CoderReactJs/Curso\ coder\ backend/Primerentrega-Sofia\ Melian/src
 
+http://localhost:8080/api/session/githubcallback
+
+
+Owned by: @SMelian
+
+App ID: 878261
+
+Client ID: Iv1.f2ea916b3f005b55
+
 
 // mongodb+srv://sofiamelian:40812518@cluster0.b4psxss.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 

@@ -33,7 +33,6 @@ router.get('/', async (req, res) => {
 });*/
 
 
-
 router.post('/register',passport.authenticate('register',{failureRedirect:'/failregister'}),async (req,res)=> {
     //res.send({status:"success", message:"Usuario registrado"})
     res.redirect('/api/session/login');
@@ -43,6 +42,11 @@ router.get('/failregister', async(req,res)=>{
     console.log('Fallo Strategy');
     res.send({error:"failed"})
 })
+
+router.post('/github',passport.authenticate('github',{scope:['user:email']}),async (req,res)=> {})
+
+router.post('/githubcallback',passport.authenticate('github',{failureRedirect:'/login'}),async (req,res)=> {})
+
 
 router.get ('/login', async (req, res) => {
    
