@@ -24,7 +24,12 @@ const pm = new ProductManager("./productos.json");
 const cm = new CarritoManager("./carrito.json");
 const Mensaje = require('./dao/models/chat.modelo'); 
 
-const PORT = 8080;
+const config = require('./config/config');
+
+//import config from './config/config';
+
+
+const PORT = config.port;
 let serverSocket;
 const app = express();
  
@@ -50,7 +55,7 @@ app.use(session(
 // este para el fileStore    store: new FileStore({ path: './sessions', ttl: 100, retries: 0 }),
 //Mongo
   store: MongoStore.create({
-    mongoUrl: "mongodb+srv://sofiamelian:40812518@cluster0.b4psxss.mongodb.net/eCommerce?retryWrites=true&w=majority&appName=Cluster0",
+    mongoUrl: config.mongoUrl,
 
     ttl:15
    } ),
@@ -84,7 +89,7 @@ const serverHttp = app.listen(PORT, () => {
 
 const connect = (async ()=>{
   try {
-    await  mongoose.connect('mongodb+srv://sofiamelian:40812518@cluster0.b4psxss.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',{dbName:"eCommerce"
+    await  mongoose.connect(config.mongoUrl,{dbName:"eCommerce"
     }); 
   } catch(error) {
  console.log ("hay un error en mongoose",error)
