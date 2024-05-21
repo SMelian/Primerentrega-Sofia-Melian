@@ -1,7 +1,7 @@
 const { Router } = require("express");
-const User = require('../models/user.modelo'); 
-const Cart = require('../models/cart.modelo'); 
-const TicketOrden = require('../models/ticketOrden.modelo'); 
+const User = require('../dao/models/User.modelo'); 
+const Cart = require('../dao/models/cart.modelo'); 
+const TicketOrden = require('../dao/models/orden.modelo'); 
 
 const router = Router();
 
