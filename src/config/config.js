@@ -11,10 +11,5 @@ const config = {
     sessionSecret: process.env.SESSION_SECRET
 };
 
-console.log("Environment Variables:");
-console.log("PORT:", config.port);
-console.log("MONGO_URL:", config.mongoUrl);
-console.log("ADMIN_NAME:", config.adminName);
-console.log("ADMIN_PASSWORD:", config.adminPassword);
 
 module.exports = config;
