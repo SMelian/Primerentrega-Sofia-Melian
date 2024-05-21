@@ -2,7 +2,10 @@ cd /Users/tomzavrsnik/Desktop/CoderReactJs/Curso\ coder\ backend/Primerentrega-S
 
 http://localhost:8080/api/session/githubcallback
 
-
+// PORT = 8080
+// MONGO_URL = "mongodb+srv://sofiamelian:40812518@cluster0.b4psxss.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+// ADMIN_NAME = adminCoder
+// ADMIN_PASSWORD = Cod3r123
 
 // mongodb+srv://sofiamelian:40812518@cluster0.b4psxss.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
