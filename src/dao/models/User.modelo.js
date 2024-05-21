@@ -6,7 +6,8 @@ const userSchema = new mongoose.Schema({
     email: String,
     age: Number,
     password: String,
-    role: { type: String, enum: ['user', 'admin'], default: 'user' }
+    role: { type: String, enum: ['user', 'admin'], default: 'user' },
+    cartId: { type: mongoose.Schema.Types.ObjectId, ref: 'Carrito' }  // Referencia al carrito del usuario
 
 });
 

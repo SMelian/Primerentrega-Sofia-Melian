@@ -9,6 +9,7 @@ const initializePassport = require('./config/passport.config');
 
 const ProductManager = require("./ProductManager");
 const CarritoManager = require("./CarritoManager");
+const TicketOrden = require('./models/ticketOrden.modelo');
 const path = require("path"); 
 const productRouter = require("./routes/products.router");
 const carritoRouter = require("./routes/carrito.router");
@@ -20,7 +21,9 @@ const cookieParser = require('cookie-parser');
 
 const pm = new ProductManager("./productos.json");
 const cm = new CarritoManager("./carrito.json");
+
 const Mensaje = require('./dao/models/chat.modelo'); 
+
 
 const config = require('./config/config');
 
