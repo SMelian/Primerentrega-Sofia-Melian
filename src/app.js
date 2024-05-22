@@ -26,6 +26,7 @@ const cm = new CarritoManager("./carrito.json");
 const Mensaje = require('./dao/models/chat.modelo'); 
 
 const config = require('./config/config');
+const nodemailer = require('nodemailer');
 
 // Other code...
 
@@ -79,6 +80,37 @@ app.use('/chat', chatRouter);
 app.use('/', viewsRouter);
 app.use('/api/session', sessionRouter);
 app.use('/crear-ticket', ticketRouter);
+
+let transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: config.user, // your Gmail account
+    pass: config.pass  // your Gmail account password or app password if 2FA is enabled
+  },
+});
+
+app.get('/mail', async(req, res) => {
+  try {
+    let result = await transporter.sendMail({
+      from: 'Test Melian <testmelian@gmail.com>',
+      to: 'sofiabelen8989@gmail.com',
+      subject: 'Correo test',
+      html: '<h1>Hola test</h1>',
+      attachments:[{
+        filename: 'txt.txt',
+        path:__dirname+'/txt.txt',
+        cid:'perrito1'
+      }]
+    });
+
+    res.status(200).send('Email sent successfully: ' + result.response);
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).send('Error sending email: ' + error.message);
+  }
+});
+
+
 
 const serverHttp = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

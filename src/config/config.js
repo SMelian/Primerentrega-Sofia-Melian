@@ -8,7 +8,9 @@ const config = {
     mongoUrl: process.env.MONGO_URL,
     adminName: process.env.ADMIN_NAME,
     adminPassword: process.env.ADMIN_PASSWORD,
-    sessionSecret: process.env.SESSION_SECRET
+    sessionSecret: process.env.SESSION_SECRET,
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
 };
 
 
