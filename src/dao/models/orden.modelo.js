@@ -1,15 +1,16 @@
-// ticketOrden.modelo.js
 const mongoose = require('mongoose');
 
 const ticketOrdenSchema = new mongoose.Schema({
-  numeroOrden: { type: Number, required: true },
-  negocio: { type: String, required: true },
-  usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Referencia al usuario
-  productos: [{ type: String, required: true }]  // Lista de productos en formato de cadena
-},{
+    numeroOrden: { type: String, required: true },
+    negocio: { type: String, required: true },
+    usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    productos: [{
+        name: { type: String, required: true },
+        quantity: { type: Number, required: true }
+    }]
+}, {
     timestamps: true
 });
 
-const TicketOrden = mongoose.model('TicketOrden', ticketOrdenSchema);
+module.exports = mongoose.model('TicketOrden', ticketOrdenSchema);
 
-module.exports = TicketOrden;

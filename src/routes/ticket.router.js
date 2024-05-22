@@ -12,11 +12,21 @@ router.post('/', async (req, res) => {
         const usuario = await User.findById(userId).populate('cartId');
         if (!usuario) throw new Error('Usuario no encontrado');
 
+        if (!usuario.cartId) throw new Error('Carrito no encontrado para el usuario');
+
         const carrito = await Cart.findById(usuario.cartId).populate('products');
         if (!carrito) throw new Error('Carrito no encontrado');
 
-        const productos = carrito.products.map(producto => producto.name);
+ 
+        if (!carrito.products || carrito.products.length === 0) throw new Error('El carrito está vacío');
 
+      
+        const productos = carrito.products.map(product => ({
+            name: product.title, 
+            quantity: 1 
+        }));
+
+        
         const nuevoTicket = new TicketOrden({
             numeroOrden,
             negocio,
@@ -24,11 +34,16 @@ router.post('/', async (req, res) => {
             productos
         });
 
+        
         await nuevoTicket.save();
+
+     
         res.status(201).json({ message: 'Ticket de orden generado con éxito', ticket: nuevoTicket });
     } catch (error) {
+       
         res.status(500).json({ message: 'Error al generar el ticket de orden', error: error.message });
     }
 });
 
 module.exports = router;
+
