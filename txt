@@ -1,5 +1,5 @@
 cd /Users/tomzavrsnik/Desktop/CoderReactJs/Curso\ coder\ backend/Primerentrega-Sofia\ Melian/src
-pdxs oamb rfvp ciah
+
 http://localhost:8080/api/session/githubcallback
 
 // PORT = 8080
