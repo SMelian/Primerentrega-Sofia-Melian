@@ -2,6 +2,7 @@ const { Router } = require("express");
 const CarritoManager = require("../CarritoManager");
 const modeloProductos = require('../dao/models/productos.modelo'); // Adjust the path as needed
 const modeloCart = require('../dao/models/cart.modelo');
+const errors = require ('../errors');
 
 const router = Router();
 const cm = new CarritoManager();
@@ -16,17 +17,16 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/:cartId', async (req, res) => {
+router.get('/:cartId', async (req, res, next) => {
     try {
         const cartId = req.params.cartId;
         const cart = await modeloCart.findById(cartId).populate('products.product').exec();
-        if (!cart) {
-            return res.status(404).json({ error: "Cart not found" });
-        }
+        
+        if (!cart) throw new CustomError(errors.CART_NOT_FOUND);
+
         res.render('cartId', { pageTitle: 'Carrito Detalle', cart });
     } catch (error) {
-        console.error('Error loading cart:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        next(error); 
     }
 });
 

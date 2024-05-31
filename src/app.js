@@ -18,6 +18,7 @@ const realTimeProducts = require("./routes/realTimeProduct.router");
 const sessionRouter = require('./routes/session.router');
 const viewsRouter = require('./routes/views.router');
 const ticketRouter = require('./routes/ticket.router'); 
+const mockingProductsRouter = require('./routes/mockingProducts.router');
 const cookieParser = require('cookie-parser');
 
 const pm = new ProductManager("./productos.json");
@@ -80,6 +81,8 @@ app.use('/chat', chatRouter);
 app.use('/', viewsRouter);
 app.use('/api/session', sessionRouter);
 app.use('/crear-ticket', ticketRouter);
+app.use('/api', mockingProductsRouter);
+
 
 let transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -147,6 +150,14 @@ app.get('/deletetCookie', (req, res) => {
     res.clearCookie('CoderCookie').send('Cookie Removed'); // aca estaria accediendo a todas las cookies pero puedo acceder a una especifica si al final de esto agrego ".nombre de la cookie"
 });
 
+app.use((err, req, res, next) => {
+    if (err instanceof CustomError) {
+        res.status(err.statusCode).json({ error: err.message });
+    } else {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 // Initialize Socket.io server
 const io = new Server(serverHttp);
 
