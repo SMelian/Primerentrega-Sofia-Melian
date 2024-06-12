@@ -21,6 +21,8 @@ const sessionRouter = require('./routes/session.router');
 const viewsRouter = require('./routes/views.router');
 const ticketRouter = require('./routes/ticket.router'); 
 const mockingProductsRouter = require('./routes/mockingProducts.router');
+const loggerTestRouter = require('./routes/loggerTest.router'); // Importa el loggerTest router
+
 const cookieParser = require('cookie-parser');
 
 const pm = new ProductManager("./productos.json");
@@ -84,7 +86,7 @@ app.use('/', viewsRouter);
 app.use('/api/session', sessionRouter);
 app.use('/crear-ticket', ticketRouter);
 app.use('/api', mockingProductsRouter);
-
+app.use('/loggerTest', loggerTestRouter);
 
 let transporter = nodemailer.createTransport({
   service: 'gmail',

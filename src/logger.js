@@ -1,23 +1,52 @@
-const { createLogger, format, transports } = require('winston');
+const { createLogger, format, transports, addColors } = require('winston');
 const { combine, timestamp, printf, errors } = format;
 
-// Define custom log format
+// Definir niveles personalizados
+const customLevels = {
+    levels: {
+        fatal: 0,
+        error: 1,
+        warning: 2,
+        info: 3,
+        http: 4,
+        debug: 5
+    },
+    colors: {
+        fatal: 'red',
+        error: 'red',
+        warning: 'yellow',
+        info: 'green',
+        http: 'magenta',
+        debug: 'blue'
+    }
+};
+
+// Formato personalizado de log
 const logFormat = printf(({ level, message, timestamp, stack }) => {
-  return `${timestamp} ${level}: ${stack || message}`;
+    return `${timestamp} ${level}: ${stack || message}`;
 });
 
+// Configuración del logger
 const logger = createLogger({
-  level: 'info', // Default log level
-  format: combine(
-    timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    errors({ stack: true }), // Include stack trace
-    logFormat
-  ),
-  transports: [
-    new transports.Console(), // Log to console
-    new transports.File({ filename: 'logs/error.log', level: 'error' }), // Log errors to a file
-    new transports.File({ filename: 'logs/combined.log' }) // Log all messages to a file
-  ]
+    levels: customLevels.levels,
+    format: combine(
+        timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        errors({ stack: true }),
+        logFormat
+    ),
+    transports: [
+        new transports.Console({
+            level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+            format: format.combine(
+                format.colorize(),
+                format.simple()
+            )
+        }),
+        new transports.File({ filename: 'logs/errors.log', level: 'error' })
+    ]
 });
+
+addColors(customLevels.colors);
 
 module.exports = logger;
+
