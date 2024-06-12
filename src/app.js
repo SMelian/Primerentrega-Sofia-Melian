@@ -6,6 +6,8 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const initializePassport = require('./config/passport.config');
+const logger = require('./logger'); // Import the logger
+
 
 const ProductManager = require("./ProductManager");
 const CarritoManager = require("./CarritoManager");
@@ -87,8 +89,8 @@ app.use('/api', mockingProductsRouter);
 let transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: config.user, // your Gmail account
-    pass: config.pass  // your Gmail account password or app password if 2FA is enabled
+    user: config.user, 
+    pass: config.pass  
   },
 });
 
