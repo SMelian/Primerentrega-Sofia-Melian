@@ -58,45 +58,6 @@ router.get('/adminUser', Auth, (req, res) => {
     res.render('adminUser', { pageTitle: 'Admin User Page' });
 });
 
-/*
-router.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        //verifica lo de coderAdmin
-        if (email === 'adminCoder@coder.com' && password === 'Cod3r123') {
-            // Redireccionar al panel de administrador
-            return res.redirect('/api/session/adminUser');
-        }
-        
-  
-
-        const user = await User.findOne({ email });
-        if (!user) {
-            throw new Error('Usuario no encontrado');
-        }
-
-        // Log the retrieved user and hashed password
-        console.log('Retrieved user:', user);
-        console.log('Retrieved hashed password:', user.password);
-
-        // Check if the password is valid
-        const isPasswordValid = await isValidPassword(password, user.password);
-        console.log('Is password valid?', isPasswordValid);
-
-        if (!isPasswordValid) {
-            throw new Error('Credenciales incorrectas');
-        }
-
-        // Establecer el objeto user en req.session
-        req.session.user = user;
-
-        //res.send('Inicio de sesión exitoso'); si lo pongo me tira error. no se puede poner dos http res
-        res.redirect('/productos');
-    } catch (error) {
-        res.status(400).send(error.message);
-    }
-});*/
 
 router.post('/login', passport.authenticate('login', { failureRedirect: '/faillogin' }), async (req, res) => {
   if (!req.user) return res.status(400).send({status:"error", error:"Credenciales no correctas"})
@@ -112,9 +73,6 @@ router.get('/faillogin', async(req,res)=>{
     console.log('Fallo Strategy');
     res.send({error:"fallo login"})
 })
-
-
-
 
 
 router.get('/forgot-password', (req, res) => {
@@ -136,7 +94,6 @@ router.post('/reset-password', async (req, res) => {
         res.status(400).send(error.message);
     }
 });
-
 
 
 

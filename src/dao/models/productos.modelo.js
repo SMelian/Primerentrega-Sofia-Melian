@@ -4,12 +4,13 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const productColl ="Productos"
 
 const productSchema = new mongoose.Schema({
-  title: String,
-  description: String,
+  title: { type: String, required: true },
+  description: { type: String, required: true },
   price: Number,
   thumbnail: String,
   code: String,
   stock: Number,
+  owner: { type: String, default: 'admin' }
 },{
     timestamps:true
 });

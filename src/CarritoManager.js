@@ -17,27 +17,41 @@ const modeloProductos = require('./dao/models/productos.modelo');
             }
         }
     
-        async addToCart(cartId, productId, title) {
+        async addToCart(userId, cartId, productId, title) {
             try {
+            
+                const user = await User.findById(userId);
+                if (!user) {
+                    console.error('User not found');
+                    return;
+                }
+        
+                
                 let cart = await modeloCart.findById(cartId);
-    
                 if (!cart) {
                     cart = await modeloCart.create({ title: title || 'Default Cart', products: [] });
                 }
-    
+        
+          
                 const product = await modeloProductos.findById(productId);
                 if (!product) {
                     console.error('Product not found');
                     return;
                 }
-    
+        
+                //Verificacion para que compruebe que no es del mismo user
+                if (user.role === 'premium' && product.owner === user.email) {
+                    console.error('No podes comprar tu propio producto!!');
+                    return;
+                }
+        
                 const productInCart = cart.products.find(p => p.product.equals(productId));
                 if (productInCart) {
                     productInCart.quantity += 1;
                 } else {
                     cart.products.push({ product: productId, quantity: 1 });
                 }
-    
+                
                 await cart.save();
                 console.log('Product added to cart successfully');
             } catch (error) {
@@ -45,7 +59,7 @@ const modeloProductos = require('./dao/models/productos.modelo');
                 throw error;
             }
         }
-    
+        
         async deleteMany() {
             try {
                 const result = await modeloCart.deleteMany();

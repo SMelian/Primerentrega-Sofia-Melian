@@ -1,11 +1,15 @@
 const { Router } = require("express");
+const Product = require('../dao/models/productos.modelo');
 const Auth = require('../auth');
-const ProductManager = require("../ProductManager"); //me faltaba esto la entrega anterior
+const { ensureAuthenticated, ensureRole } = require('../config/auth.middleware'); 
+
+
+const ProductManager = require("../ProductManager"); 
 
 
 const router = Router();
 
-const pm = new ProductManager(); // instancia - "./productos.json"
+const pm = new ProductManager(); 
 
 
 router.get('/',Auth, async (req, res) => {
@@ -72,17 +76,15 @@ router.get('/:productId', Auth, async (req, res) => {
     }
   })
 
-  router.post('/', Auth, async (req, res) => {
+  router.post('/create', ensureAuthenticated, ensureRole(['premium', 'admin']), async (req, res) => {
     try {
-        const { title, description, code, price, status, stock, category, thumbnails } = req.body;
-        if (!title || !description || !code || !price || !status || !stock || !category || !thumbnails) {
-            return res.status(400).json({ error: "All fields are required" });
-        }
-        const newProduct = await pm.addProduct(title, description, code, price, status, stock, category, thumbnails);
-        //res.status(201).json(newProduct);
-        req.io.emit("NewProduct",newProduct)
+        const { name, description, price } = req.body;
+        const owner = req.user.role === 'premium' ? req.user.email : 'admin'; 
+        const product = new Product({ name, description, price, owner });
+        await product.save();
+        res.status(201).json(product);
     } catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json({ error: 'Error al crear el producto' });
     }
 });
 
@@ -124,20 +126,20 @@ router.post('/api/productos',Auth, async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/delete/:id', ensureAuthenticated, ensureRole(['premium', 'admin']), async (req, res) => {
     try {
-        const productId = req.params.id;
-
-//verifica si el producto esta en el array
-        const existingProduct = await pm.getProductById(productId);
-        if (!existingProduct) {
-            return res.status(404).json({ error: "Product not found" });
+        const product = await Product.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({ error: 'Producto no encontrado' });
         }
-        await pm.deleteProduct(productId);
 
-        res.status(204).send(); 
+        if (req.user.role !== 'admin' && product.owner !== req.user.email) {
+            return res.status(403).json({ error: 'No tiene permiso para eliminar este producto' });
+        }
+        await product.remove();
+        res.status(200).json({ message: 'Producto eliminado' });
     } catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json({ error: 'Error al eliminar el producto' });
     }
 });
 

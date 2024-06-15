@@ -6,9 +6,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const initializePassport = require('./config/passport.config');
-const logger = require('./logger'); // Import the logger
-
-
+const logger = require('./logger'); 
 const ProductManager = require("./ProductManager");
 const CarritoManager = require("./CarritoManager");
 const TicketOrden = require('./dao/models/orden.modelo');
@@ -21,7 +19,9 @@ const sessionRouter = require('./routes/session.router');
 const viewsRouter = require('./routes/views.router');
 const ticketRouter = require('./routes/ticket.router'); 
 const mockingProductsRouter = require('./routes/mockingProducts.router');
-const loggerTestRouter = require('./routes/loggerTest.router'); // Importa el loggerTest router
+const loggerTestRouter = require('./routes/loggerTest.router'); 
+const passwordResetRouter = require('./routes/passwordReset.router'); 
+const usersRouter = require('./routes/user.router'); 
 
 const cookieParser = require('cookie-parser');
 
@@ -32,8 +32,7 @@ const Mensaje = require('./dao/models/chat.modelo');
 
 const config = require('./config/config');
 const nodemailer = require('nodemailer');
-
-// Other code...
+const { ensureAuthenticated, ensureRole } = require('./config/auth.middleware');
 
 
 const PORT = config.port;
@@ -87,6 +86,9 @@ app.use('/api/session', sessionRouter);
 app.use('/crear-ticket', ticketRouter);
 app.use('/api', mockingProductsRouter);
 app.use('/loggerTest', loggerTestRouter);
+app.use('/api/password-reset', passwordResetRouter);
+app.use('/api/users', usersRouter); 
+
 
 let transporter = nodemailer.createTransport({
   service: 'gmail',
