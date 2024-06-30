@@ -11,6 +11,47 @@ const router = Router();
 
 const pm = new ProductManager(); 
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Product:
+ *       type: object
+ *       required:
+ *         - name
+ *         - price
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: The auto-generated id of the product
+ *         name:
+ *           type: string
+ *           description: The name of the product
+ *         price:
+ *           type: number
+ *           description: The price of the product
+ *       example:
+ *         id: d5fE_asz
+ *         name: Product name
+ *         price: 29.99
+ */
+
+/**
+ * @swagger
+ * /productos:
+ *   get:
+ *     summary: Returns a list of all products
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: The list of products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Product'
+ */
 
 router.get('/',Auth, async (req, res) => {
     try {
@@ -59,7 +100,29 @@ router.get('/',Auth, async (req, res) => {
     }
 });
 
-
+/**
+ * @swagger
+ * /productos/{id}:
+ *   get:
+ *     summary: Get a product by ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The product ID
+ *     responses:
+ *       200:
+ *         description: The product description by id
+ *         contents:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       404:
+ *         description: The product was not found
+ */
 
 
 router.get('/:productId', Auth, async (req, res) => {

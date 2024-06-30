@@ -8,7 +8,7 @@ const options = {
         info: {
             title: 'API Documentation',
             version: '1.0.0',
-            description: 'Documentation for the eCommerce API',
+            description: 'Documentacion para el eCommerce API',
         },
     },
     apis: [path.join(__dirname, './docs/*.js')], 

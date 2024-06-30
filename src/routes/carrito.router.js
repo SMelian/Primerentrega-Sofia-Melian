@@ -7,6 +7,55 @@ const errors = require ('../errors');
 const router = Router();
 const cm = new CarritoManager();
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Cart:
+ *       type: object
+ *       required:
+ *         - title
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: The auto-generated id of the cart
+ *         title:
+ *           type: string
+ *           description: The title of the cart
+ *         products:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               product:
+ *                 $ref: '#/components/schemas/Product'
+ *               quantity:
+ *                 type: number
+ *       example:
+ *         id: d5fE_asz
+ *         title: Cart title
+ *         products:
+ *           - product: d5fE_asz
+ *             quantity: 2
+ */
+
+/**
+ * @swagger
+ * /carrito:
+ *   get:
+ *     summary: Returns a list of all carts
+ *     tags: [Carts]
+ *     responses:
+ *       200:
+ *         description: The list of carts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Cart'
+ */
+
 router.get('/', async (req, res) => {
     try {
         const cart = await cm.loadCartData();
