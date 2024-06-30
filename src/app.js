@@ -22,7 +22,7 @@ const mockingProductsRouter = require('./routes/mockingProducts.router');
 const loggerTestRouter = require('./routes/loggerTest.router'); 
 const passwordResetRouter = require('./routes/passwordReset.router'); 
 const usersRouter = require('./routes/user.router'); 
-
+const swaggerDocs = require('./swagger');
 const cookieParser = require('cookie-parser');
 
 const pm = new ProductManager("./productos.json");
@@ -88,7 +88,7 @@ app.use('/api', mockingProductsRouter);
 app.use('/loggerTest', loggerTestRouter);
 app.use('/api/password-reset', passwordResetRouter);
 app.use('/api/users', usersRouter); 
-
+swaggerDocs(app);
 
 let transporter = nodemailer.createTransport({
   service: 'gmail',
