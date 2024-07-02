@@ -65,3 +65,12 @@ router.get('/', async (req, res) => {
 //       res.status(500).json({ error: "Internal Server Error" });
 //     }
 //   });
+
+
+
+{
+  "name": "primerentrega-sofia-melian",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "description": "",
+  "main": "ProductManager.js",
