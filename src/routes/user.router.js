@@ -1,9 +1,10 @@
 const express = require('express');
 const User = require('../dao/models/User.modelo');
-const { ensureAuthenticated, ensureRole } = require('../config/auth.middleware');
+const { ensureAuthenticated, ensureRole, updateLastConnection } = require('../config/auth.middleware');
+const upload = require('../config/multerConfig');
 const router = express.Router();
 
-// Upgrade to premium
+// Existing /premium/:uid route
 router.put('/premium/:uid', ensureAuthenticated, ensureRole(['admin']), async (req, res) => {
     try {
         const userId = req.params.uid;
@@ -13,6 +14,19 @@ router.put('/premium/:uid', ensureAuthenticated, ensureRole(['admin']), async (r
             return res.status(404).send('Usuario no encontrado');
         }
 
+        // Check if the user is trying to upgrade to 'premium'
+        if (user.role === 'user') {
+            const requiredDocuments = ['Identificación', 'Comprobante de domicilio', 'Comprobante de estado de cuenta'];
+            const userHasRequiredDocuments = requiredDocuments.every(doc => 
+                user.documents.some(userDoc => userDoc.name === doc)
+            );
+
+            if (!userHasRequiredDocuments) {
+                return res.status(400).send('El usuario no ha subido todos los documentos requeridos');
+            }
+        }
+
+        // Toggle role between 'user' and 'premium'
         user.role = user.role === 'user' ? 'premium' : 'user';
         await user.save();
 
@@ -22,23 +36,27 @@ router.put('/premium/:uid', ensureAuthenticated, ensureRole(['admin']), async (r
     }
 });
 
-// Actualiza docs
-router.put('/:uid/documents', ensureAuthenticated, async (req, res) => {
+// New /:uid/documents route
+router.post('/:uid/documents', ensureAuthenticated, upload.array('documents'), async (req, res) => {
     try {
         const userId = req.params.uid;
-        const { documents } = req.body;
         const user = await User.findById(userId);
 
         if (!user) {
             return res.status(404).send('Usuario no encontrado');
         }
 
-        user.documents = documents;
+        const documents = req.files.map(file => ({
+            name: file.originalname,
+            reference: file.path
+        }));
+
+        user.documents.push(...documents);
         await user.save();
 
-        res.status(200).send(user);
+        res.status(200).send('Documentos subidos exitosamente');
     } catch (error) {
-        res.status(500).send('Error al actualizar los documentos del usuario');
+        res.status(500).send('Error al subir los documentos');
     }
 });
 
