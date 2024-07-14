@@ -10,6 +10,11 @@ const userSchema = new mongoose.Schema({
     cartId: { type: mongoose.Schema.Types.ObjectId, ref: 'Carrito' },  // Referencia al carrito del usuario
     resetPasswordToken: String,
     resetPasswordExpires: Date,
+    documents: [{
+        name: String,
+        reference: String
+    }],
+    last_connection: Date
 });
 
 userSchema.methods.comparePassword = async function (password) {
