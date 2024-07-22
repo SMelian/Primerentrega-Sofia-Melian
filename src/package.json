@@ -2,8 +2,8 @@
   "name": "primerentrega-sofia-melian",
   "version": "1.0.0",
   "type": "commonjs",
-  "description": "",
-  "main": "ProductManager.js",
+  "description": "CoderHOUSE Project backend",
+  "main": "src/app.js",
   "scripts": {
     "test": "mocha --recursive test",
     "start": "node src/app.js",
