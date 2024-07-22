@@ -2,9 +2,41 @@ const express = require('express');
 const User = require('../dao/models/User.modelo');
 const { ensureAuthenticated, ensureRole, updateLastConnection } = require('../config/auth.middleware');
 const upload = require('../config/multerConfig');
+const nodemailer = require('nodemailer'); 
 const router = express.Router();
 
-// Existing /premium/:uid route
+router.get('/', ensureAuthenticated, ensureRole(['admin']), async (req, res) => {
+    try {
+        const users = await User.find({}, 'name email role');
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).send('Error al obtener los usuarios');
+    }
+});
+
+
+router.delete('/', ensureAuthenticated, ensureRole(['admin']), async (req, res) => {
+    try {
+        const cutoffDate = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000); 
+        const inactiveUsers = await User.find({ last_connection: { $lt: cutoffDate } });
+
+        if (inactiveUsers.length === 0) {
+            return res.status(200).send('No hay usuarios inactivos para eliminar');
+        }
+
+        for (const user of inactiveUsers) {
+            await sendDeletionEmail(user.email);
+        }
+
+        await User.deleteMany({ _id: { $in: inactiveUsers.map(user => user._id) } });
+        res.status(200).send('Usuarios inactivos eliminados');
+    } catch (error) {
+        res.status(500).send('Error al eliminar usuarios inactivos');
+    }
+});
+
+
+
 router.put('/premium/:uid', ensureAuthenticated, ensureRole(['admin']), async (req, res) => {
     try {
         const userId = req.params.uid;
@@ -14,7 +46,6 @@ router.put('/premium/:uid', ensureAuthenticated, ensureRole(['admin']), async (r
             return res.status(404).send('Usuario no encontrado');
         }
 
-        // Check if the user is trying to upgrade to 'premium'
         if (user.role === 'user') {
             const requiredDocuments = ['Identificación', 'Comprobante de domicilio', 'Comprobante de estado de cuenta'];
             const userHasRequiredDocuments = requiredDocuments.every(doc => 
@@ -26,7 +57,6 @@ router.put('/premium/:uid', ensureAuthenticated, ensureRole(['admin']), async (r
             }
         }
 
-        // Toggle role between 'user' and 'premium'
         user.role = user.role === 'user' ? 'premium' : 'user';
         await user.save();
 
@@ -36,7 +66,6 @@ router.put('/premium/:uid', ensureAuthenticated, ensureRole(['admin']), async (r
     }
 });
 
-// New /:uid/documents route
 router.post('/:uid/documents', ensureAuthenticated, upload.array('documents'), async (req, res) => {
     try {
         const userId = req.params.uid;
@@ -61,3 +90,4 @@ router.post('/:uid/documents', ensureAuthenticated, upload.array('documents'), a
 });
 
 module.exports = router;
+

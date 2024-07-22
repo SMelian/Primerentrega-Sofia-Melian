@@ -6,6 +6,7 @@ http://localhost:8080/api/session/githubcallback
 // MONGO_URL = "mongodb+srv://sofiamelian:40812518@cluster0.b4psxss.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 // ADMIN_NAME = adminCoder
 // ADMIN_PASSWORD = Cod3r123
+//coderTest!*
 
 // mongodb+srv://sofiamelian:40812518@cluster0.b4psxss.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 

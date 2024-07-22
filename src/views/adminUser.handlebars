@@ -3,3 +3,32 @@
 <form action="/api/session/logout" method="get">
         <button type="submit">Cerrar session</button>
 </form>
+
+ <h1>Manage Users</h1>
+    <table id="usersTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each users}}
+            <tr>
+                <td>{{this.name}}</td>
+                <td>{{this.email}}</td>
+                <td>{{this.role}}</td>
+                <td>
+                    <form action="/api/users/premium/{{this._id}}" method="post">
+                        <button type="submit">Change Role</button>
+                    </form>
+                    <form action="/api/users/{{this._id}}" method="post" class="delete-user">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>

@@ -1,15 +1,40 @@
 const { Router } = require("express");
 const Product = require('../dao/models/productos.modelo');
+const User = require('../dao/models/User.modelo');
 const Auth = require('../auth');
-const { ensureAuthenticated, ensureRole } = require('../config/auth.middleware'); 
+const { ensureAuthenticated, ensureRole } = require('../config/auth.middleware');
+const nodemailer = require('nodemailer');
+const config = require('../config/config');
 
 
-const ProductManager = require("../ProductManager"); 
-
-
+const ProductManager = require("../ProductManager");
 const router = Router();
 
-const pm = new ProductManager(); 
+const pm = new ProductManager();
+
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: config.user, 
+      pass: config.pass  
+    },
+  });
+
+const sendDeletionEmail = async (email, productName) => {
+    const mailOptions = {
+        from: 'testmelian@gmail.com',
+        to: email,
+        subject: 'Product Deleted Notification',
+        text: `Your product "${productName}" has been deleted.`
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully');
+    } catch (error) {
+        console.error('Error sending email:', error);
+    }
+};
 
 /**
  * @swagger
