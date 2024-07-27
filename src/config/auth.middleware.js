@@ -16,7 +16,7 @@ const User = require('../dao/models/User.modelo');
 
 const updateLastConnection = async (req, res, next) => {
     try {
-        const userId = req.user.id; // Assuming req.user contains the authenticated user info
+        const userId = req.user.id; 
         await User.findByIdAndUpdate(userId, { last_connection: new Date() });
         next();
     } catch (error) {

@@ -1,8 +1,6 @@
 require('dotenv').config({ path: "../src/config/.env" });
 
 
-
-
 const config = {
     port: process.env.PORT,
     mongoUrl: process.env.MONGO_URL,

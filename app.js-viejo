@@ -5,33 +5,40 @@ const { Server } = require("socket.io");
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const passport = require('passport');
-const initializePassport = require('./config/passport.config');
-const logger = require('./logger'); 
-const ProductManager = require("./ProductManager");
-const CarritoManager = require("./CarritoManager");
-const TicketOrden = require('./dao/models/orden.modelo');
+const initializePassport = require('./src/config/passport.config');
+const logger = require('./src/logger'); 
+const ProductManager = require("./src/ProductManager");
+const CarritoManager = require("./src/CarritoManager");
+const TicketOrden = require('./src/dao/models/orden.modelo');
 const path = require("path"); 
-const productRouter = require("./routes/products.router");
-const carritoRouter = require("./routes/carrito.router");
-const chatRouter = require("./routes/chat.router");
-const realTimeProducts = require("./routes/realTimeProduct.router");
-const sessionRouter = require('./routes/session.router');
-const viewsRouter = require('./routes/views.router');
-const ticketRouter = require('./routes/ticket.router'); 
-const mockingProductsRouter = require('./routes/mockingProducts.router');
-const loggerTestRouter = require('./routes/loggerTest.router'); 
-const passwordResetRouter = require('./routes/passwordReset.router'); 
-const usersRouter = require('./routes/user.router'); 
-const swaggerDocs = require('./swagger');
+const productRouter = require("./src/routes/products.router");
+const carritoRouter = require("./src/routes/carrito.router");
+const chatRouter = require("./src/routes/chat.router");
+const realTimeProducts = require("./src/routes/realTimeProduct.router");
+const sessionRouter = require('./src/routes/session.router');
+const viewsRouter = require('./src/routes/views.router');
+const ticketRouter = require('./src/routes/ticket.router'); 
+const mockingProductsRouter = require('./src/routes/mockingProducts.router');
+const loggerTestRouter = require('./src/routes/loggerTest.router'); 
+const passwordResetRouter = require('./src/routes/passwordReset.router'); 
+const usersRouter = require('./src/routes/user.router'); 
+const swaggerDocs = require('./src/swagger');
 const cookieParser = require('cookie-parser');
-const { errors, CustomError } = require('./errors');
+const { errors, CustomError } = require('./src/errors');
 
-const Mensaje = require('./dao/models/chat.modelo'); 
-const config = require('./config/config');
+
+const pm = new ProductManager("./productos.json");
+const cm = new CarritoManager("./carrito.json");
+
+const Mensaje = require('./src/dao/models/chat.modelo'); 
+
+const config = require('./src/config/config');
 const nodemailer = require('nodemailer');
-const { ensureAuthenticated, ensureRole } = require('./config/auth.middleware');
+const { ensureAuthenticated, ensureRole } = require('./src/config/auth.middleware');
+
 
 const PORT = config.port;
+let serverSocket;
 const app = express();
 
 console.log("Environment Variables:");
@@ -61,9 +68,9 @@ app.use(session({
     saveUninitialized: true
 }));
 
-initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
+initializePassport(passport);
 
 app.use("/api/productos", (req, res, next) => {
     req.io = io;
@@ -91,7 +98,7 @@ let transporter = nodemailer.createTransport({
   },
 });
 
-app.get('/mail', async (req, res) => {
+app.get('/mail', async(req, res) => {
   try {
     let result = await transporter.sendMail({
       from: 'Test Melian <testmelian@gmail.com>',
@@ -100,8 +107,8 @@ app.get('/mail', async (req, res) => {
       html: '<h1>Hola test</h1>',
       attachments:[{
         filename: 'txt.txt',
-        path: __dirname + '/txt.txt',
-        cid: 'perrito1'
+        path:__dirname+'/txt.txt',
+        cid:'perrito1'
       }]
     });
 
@@ -112,18 +119,21 @@ app.get('/mail', async (req, res) => {
   }
 });
 
+
+
 const serverHttp = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
-const connect = async () => {
+const connect = (async () => {
     try {
         await mongoose.connect(config.mongoUrl, { dbName: "eCommerce" });
     } catch (error) {
         console.log("hay un error en mongoose", error);
     }
-};
+});
 connect();
+
 
 const connection = mongoose.connection;
 
@@ -147,10 +157,20 @@ app.get('/deletetCookie', (req, res) => {
     res.clearCookie('CoderCookie').send('Cookie Removed'); 
 });
 
+app.use((err, req, res, next) => {
+    if (err instanceof CustomError) {
+        res.status(err.statusCode).json({ error: err.message });
+    } else {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 const io = new Server(serverHttp);
 
 let mensajes = [];
 let usuario = [];
+
 
 io.on("connection", socket => {
     console.log(`A user connected ${socket.id}`);
@@ -163,7 +183,7 @@ io.on("connection", socket => {
 
     socket.on("mensaje", async (nombre, mensaje) => {
         const nuevoMensaje = new Mensaje({ nombre, mensaje }); 
-        await nuevoMensaje.save()
+        await nuevoMensaje.save() 
             .then(() => {
                 io.emit("nuevoMensaje", nombre, mensaje);
             })
@@ -172,14 +192,4 @@ io.on("connection", socket => {
             });
     });
 });
-
-app.use((err, req, res, next) => {
-    if (err instanceof CustomError) {
-        res.status(err.statusCode).json({ error: err.message });
-    } else {
-        console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
 module.exports = app;

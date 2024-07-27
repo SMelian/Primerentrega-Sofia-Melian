@@ -13,28 +13,7 @@ router.get('/', async (req, res) => {
  
 });
 
-// Ruta para el registro de usuario - intento
-/*router.post('/', async (req, res) => {
-    try {
-        const { first_name, last_name, email, age, password } = req.body;
-        if ( !first_name || !last_name || !email || !age || !password )return res.status(400).send(error.message);
-        const hashedPassword = await createHash(password);
-
-        console.log('Hashed password:', hashedPassword);
-        
-        
-        const user = new User({ first_name, last_name, email, age, password:hashedPassword });
-        await user.save();
-        //res.send('Usuario registrado exitosamente');
-        res.redirect('/api/session/login');
-    } catch (error) {
-        res.status(400).send(error.message);
-    }
-});*/
-
-
 router.post('/register',passport.authenticate('register',{failureRedirect:'/failregister'}),async (req,res)=> {
-    //res.send({status:"success", message:"Usuario registrado"})
     res.redirect('/api/session/login');
 })
 
@@ -64,7 +43,7 @@ router.post('/login', passport.authenticate('login', { failureRedirect: '/faillo
   req.session.user = {
     email:req.user.email,
     }
-  //  res.send({status:"success", payload:req.user})
+
     res.redirect('/productos');
 
 });
@@ -76,14 +55,13 @@ router.get('/faillogin', async(req,res)=>{
 
 
 router.get('/forgot-password', (req, res) => {
-    res.render('forgot-password'); // Renderizar el formulario para "Olvidé mi contraseña"
+    res.render('forgot-password'); 
 });
 
 router.post('/reset-password', async (req, res) => {
     try {
         const { email } = req.body;
 
-        // Buscar el usuario por su correo electrónico
         const user = await User.findOne({ email });
         if (!user) {
             throw new Error('Usuario no encontrado');
@@ -98,13 +76,12 @@ router.post('/reset-password', async (req, res) => {
 
 
 router.get('/logout', (req, res) => {
-    // Destroy the session
     req.session.destroy(err => {
         if (err) {
             console.error('Error destroying session:', err);
             res.status(500).send('Internal Server Error');
         } else {
-            res.redirect('/api/session/login'); // Redirect to home page after logout
+            res.redirect('/api/session/login'); 
         }
     });
 });

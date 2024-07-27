@@ -6,16 +6,14 @@ const router = Router();
 router.get('/', (req, res) => {
     if (!req.session.counter) {
         req.session.counter = 1; 
-        res.send('Bienvenido cara de sapo')// Initialize the counter on the first visit
+        res.send('Bienvenido')
     } else {
         req.session.counter++; 
-        res.send(`La cara de sapo ha visitado la página ${req.session.counter} veces`);
-        // Increment the counter on subsequent visits
+        res.send(`Ha visitado la página ${req.session.counter} veces`);
     }
 });
 
 router.get('/login', (req, res) => {
-//construyo la session
 const { username, password } = req.query
 
 if(username !== 'pepeVeni' || password !== 'saltasalta') {
@@ -29,7 +27,7 @@ res.send("si sabes saltar pepe, pero para!")
 
 
 router.get('/api/sessions', (req, res) => {
-    //construyo la session
+  
     const { username, password } = req.query
     
     if(username !== 'pepeVeni' || password !== 'saltasalta') {
@@ -44,7 +42,6 @@ router.get('/api/sessions', (req, res) => {
 
     
 router.get('/ruta-protegida', Auth, (req, res) => {
-    // Si el middleware requireAuth pasa, significa que el usuario está autenticado
     res.send(`Bienvenido, ${req.session.user}! Has accedido a una ruta protegida.`);
 });
 

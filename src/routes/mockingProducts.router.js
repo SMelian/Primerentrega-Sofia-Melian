@@ -2,15 +2,6 @@ const { Router } = require('express');
 const generateMockProducts = require('../mockingProduct');
 const logger = require('../logger'); 
 
-// const router = Router();
-
-// router.get('/mockingproducts', (req, res) => {
-//     const products = generateMockProducts();
-//     res.json(products);
-// });
-
-// module.exports = router;
-
 
 const router = Router();
 

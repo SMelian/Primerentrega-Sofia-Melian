@@ -1,16 +1,14 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const GithubStrategy = require('passport-github2');
+const GithubStrategy = require('passport-github2').Strategy;
 const User = require('../dao/models/User.modelo');
 const { createHash, isValidPassword } = require('../utils');
 
-
-
 const initializePassport = () => {
-    passport.use('github',new GithubStrategy({
+    passport.use('github', new GithubStrategy({
         clientID: "Iv1.f2ea916b3f005b55",
         clientSecret: "8b3bf1e0f378c082e103b2d999f3c9dbffbdcdd0",
-        callBackURL: "http://localhost:8080/api/session/githubcallback"
+        callbackURL: "http://localhost:8080/api/session/githubcallback"
     },
     async (accessToken, refreshToken, profile, done) => {
         try {
@@ -22,7 +20,7 @@ const initializePassport = () => {
                     first_name: profile._json.first_name,
                     last_name: profile._json.last_name,
                     email: profile._json.email,
-                    age: profile._json.age, 
+                    age: profile._json.age,
                 });
                 const result = await newUser.save();
                 return done(null, result);
@@ -31,13 +29,12 @@ const initializePassport = () => {
                 return done(null, user);
             }
         } catch (error) {
-            return done("Error al obtener el usuario: " + error);
+            return done(error);
         }
-    }
-    ));
+    }));
 
     // Register strategy
-    passport.use('register', new LocalStrategy(  
+    passport.use('register', new LocalStrategy(
         { passReqToCallback: true, usernameField: 'email' },
         async (req, email, password, done) => {
             try {
@@ -45,7 +42,7 @@ const initializePassport = () => {
                 let user = await User.findOne({ email });
                 if (user) {
                     console.log("User already exists");
-                    return done(null, false);
+                    return done(null, false, { message: 'User already exists' });
                 }
 
                 // Hash the password
@@ -64,7 +61,7 @@ const initializePassport = () => {
                 const result = await newUser.save();
                 return done(null, result);
             } catch (error) {
-                return done("Error al obtener el usuario: " + error);
+                return done(error);
             }
         }
     ));
@@ -72,17 +69,21 @@ const initializePassport = () => {
     // Login strategy
     passport.use('login', new LocalStrategy(
         { passReqToCallback: true, usernameField: 'email' },
-        async (req, username, password, done) => {
+        async (req, email, password, done) => {
             try {
                 // Find the user by email
-                const user = await User.findOne({ email: username });
-    
+                const user = await User.findOne({ email });
+
                 // If user not found or password doesn't match, return error
-                const isPasswordValid = await isValidPassword(password, user.password);
-                if (!isPasswordValid)  {
-                    return done(null, false, { message: 'Usuario o contraseña incorrectos' });
+                if (!user) {
+                    return done(null, false, { message: 'Incorrect email' });
                 }
-    
+
+                const isPasswordValid = await isValidPassword(password, user.password);
+                if (!isPasswordValid) {
+                    return done(null, false, { message: 'Incorrect password' });
+                }
+
                 // If user found and password matches, return user
                 return done(null, user);
             } catch (error) {
@@ -97,8 +98,12 @@ const initializePassport = () => {
     });
 
     passport.deserializeUser(async (id, done) => {
-        let user = await User.findById(id);
-        done(null, user);
+        try {
+            const user = await User.findById(id);
+            done(null, user);
+        } catch (error) {
+            done(error);
+        }
     });
 };
 

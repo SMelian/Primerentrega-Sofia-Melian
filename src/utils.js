@@ -14,8 +14,16 @@ const isValidPassword = async (password, hashedPassword) => {
     return await bcrypt.compare(password, hashedPassword);
 }
 
+class CustomError extends Error {
+    constructor(message, statusCode) {
+      super(message);
+      this.statusCode = statusCode;
+    }
+  }
+
 module.exports = {
     createHash,
     isValidPassword,
-    rutaProductos
+    rutaProductos,
+    CustomError
 };
